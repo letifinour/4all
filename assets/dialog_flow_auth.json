@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "covoituragebot-gs9e",
+  "private_key_id": "86137dfdcb26ad827d8cce6dfbc3ed09b381643b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCmxAnlY33BkFl5\nZ2i5T7x9VmYE5oIQWmZeFYSfh8kMCxFPabzym5btPRtB+KaOFhkuMhuhNz+N14Ca\nfraI9yPik59CC5ilNKQtYWnYYRtteHgR/UOzq0n4y6IuCnvxlNPRSwXNod8rhg37\nG8p6NyMd/oBgS6cFTAD18TKL1cNbta0wGLeVE1pXH1UBpAxambeFp3gQtQweMzJW\nG0MOBBsg3OEEe2qZnZCEeYN3BQI+cwYjR6IullZHeio3D1nRDuCMJKgf5Wipi5Ik\n0gx6m5znnF2rl0kKSG9y6oItwxsG+A7nnnia9mkp0QRD2+QaZ15cOeB/uSd8RnNb\nnd/lCwhVAgMBAAECggEANvb5LgZvPfuWSfnn3eAmh4cRA/93ke1BvTPJbQ1DmfkR\n4QNAWBQpGBNiZwmN19n3va6dRbMget8zD3jBL/6I8NZoEMwiqRzjGeP4D23eLOQe\nawt3I4JK1LpFP3iMJnE/qUVZac+27zD1bbTYtRR0OiAWbuawa4ID9Qvk9Yrko1aD\nP1gZP0jQSK1yQ2v1Zlp7oYKT4L8CKgeD+4+726LGOzfhEJhkNm6God0bF2DReron\nyPo3j18A8VHmCecpsjEjsQR0B7f63aLzE/gsk51Bv+bZN70Yliu66tfRMDGUcWvQ\nQslPmONbDuFzYD+qT9BGaHyHJJ6W/3JIScuFw5FedwKBgQDSYwYLzL592nAyF4hl\nY7VAfO+lWQJX4z2/aSP0oLA65Gk68500zO7d+Cc32q9taa6ZuBtNCxNT0Scf4H1+\nZq7mxdvFwYQZXj6PPetHWPBi9nR98dUTtkwUI23/D483XBGiBRwTPtn2+piQKwea\nniJhly9kDkfUeAuAlqY3AogNTwKBgQDK6/EzeoNoVHB6UMUJfSL7c6oKgs5KJXnF\nisXtfpsNWWjm4emenG6LSoTImoEaIBITLLikmLkdQTmq9wafo0zLl9Aduaqxlvmv\nr+OtHebrHYPaRFXc/r7XC8gNw3a+EYUWDxgZu4dalEjk/6l0aX7cp50/ownsfnhU\nrifGwvYPGwKBgFMfJpNg6F5HAI759zy/wSvicLhuS1u3/3xxqPAM0LPj7KOK/rCO\ny01NrwkFUMw0tfQr5jVxS8iQ2RliE5LuNOoegC9Ivs1bC/KCL0P4Irmmz+22r03j\nd3l5agsc9aOUr67IwAfmjC1lYwOKzK1NDx5poiKw9bY/W6QJYVBYorJHAoGAfmM0\naR7OiAXHxLdX8hAJ4Nnqt/8+43mx/bLwknq/sjHVH7Dn5I2EYKd6SsPI02/UMjMx\nkfs5mRoOBAk2C+oXI9ubmVgSE+h3/dAsm5+7Owe4HxNe83WLgb9pzADJjZq17MZb\n+XMO3ADt4gvHDKXEiUSwsXkn7i/bXMrYJXk67q8CgYAOlChSNcxdh75iqsTKPlJE\nC/QBdjh4bhntD08PPMiIdn27MUhxsBphwzK7kIK639oz1L+0ZBB0C9MqCZL7e2QZ\nQgSwNG2iCTFyHPwm5qlDptKw5Qa6zWawJz5WbnjwEiZ3MiY58+mPFypC3GC/D5vX\n9JeSRavSpcQtUBLOHAxc2Q==\n-----END PRIVATE KEY-----\n",
+  "client_email": "covoituragebot@covoituragebot-gs9e.iam.gserviceaccount.com",
+  "client_id": "102217979883738168522",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/covoituragebot%40covoituragebot-gs9e.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

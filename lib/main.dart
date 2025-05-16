@@ -19,7 +19,7 @@ final user = FirebaseAuth.instance.currentUser;
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: user == null ? WelcomePage() : Profilepage(onPressed: () {}),
+    home: WelcomePage() 
   ));
 }
 

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Add this import
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -25,6 +26,8 @@ class _MesReservationsPageState extends State<MesReservationsPage> {
   bool isLoading = true;
 
   final String projectId = 'projet-3d2e8';
+  final FirebaseFirestore _firestore =
+      FirebaseFirestore.instance; // Add this line
 
   @override
   void initState() {
@@ -34,28 +37,27 @@ class _MesReservationsPageState extends State<MesReservationsPage> {
 
   Future<Map<String, dynamic>> fetchTrajetDetails(
       String trajetId, String idToken) async {
-    final url =
-        'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/trajets/$trajetId';
+    try {
+      final trajetDoc =
+          await _firestore.collection('trajets').doc(trajetId).get();
 
-    final response = await http.get(
-      Uri.parse(url),
-      headers: {
-        'Authorization': 'Bearer $idToken',
-      },
-    );
+      if (trajetDoc.exists) {
+        final data = trajetDoc.data() as Map<String, dynamic>;
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final fields = data['fields'];
-
-      return {
-        'depart': fields['depart']?['stringValue'] ?? '',
-        'arrivee': fields['arrivee']?['stringValue'] ?? '',
-        'prix': fields['prix']?['integerValue'] ?? '0',
-        'dateTrajet': fields['date']?['timestampValue'] ?? '',
-      };
-    } else {
-      print('Erreur lors de la récupération du trajet : ${response.body}');
+        return {
+          'depart': data['depart'] ?? '',
+          'arrivee': data['arrivee'] ?? '',
+          'prix': data['prix'] ?? 0,
+          'dateTrajet': data['date'] != null
+              ? (data['date'] as Timestamp).toDate().toIso8601String()
+              : '',
+        };
+      } else {
+        print('Trajet non trouvé: $trajetId');
+        return {};
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération du trajet: $e');
       return {};
     }
   }
@@ -69,66 +71,53 @@ class _MesReservationsPageState extends State<MesReservationsPage> {
   Future<void> fetchReservations() async {
     setState(() => isLoading = true);
     try {
-      final String? idToken =
-          await FirebaseAuth.instance.currentUser?.getIdToken();
-      if (idToken == null) throw Exception("Utilisateur non connecté");
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) throw Exception("Utilisateur non connecté");
 
-      final url =
-          'https://firestore.googleapis.com/v1/projects/$projectId/databases/(default)/documents/reservations';
+      final reservationsSnapshot =
+          await _firestore.collection('reservations').get();
+      List<Map<String, dynamic>> loadedReservations = [];
 
-      final response = await http.get(Uri.parse(url), headers: {
-        'Authorization': 'Bearer $idToken',
+      for (var doc in reservationsSnapshot.docs) {
+        final data = doc.data();
+
+        final dateDemande = data['dateDemande'] != null
+            ? (data['dateDemande'] as Timestamp).toDate()
+            : null;
+
+        final passagerId = data['passager_id'] ?? '';
+        final conducteurId = data['conducteurId'] ?? '';
+        final trajetId = data['trajetId'] ?? '';
+
+        final trajetDetails =
+            await fetchTrajetDetails(trajetId, ''); // idToken no longer needed
+
+        loadedReservations.add({
+          'depart': trajetDetails['depart'],
+          'arrivee': trajetDetails['arrivee'],
+          'prix': trajetDetails['prix'],
+          'statut': data['statut'] ?? '',
+          'dateDemande': dateDemande?.toString() ?? '',
+          'passager_id': passagerId,
+          'conducteurId': conducteurId,
+        });
+      }
+
+      final userReservations = loadedReservations
+          .where((res) => res['passager_id'] == userId)
+          .toList();
+
+      userReservations.sort((a, b) {
+        final dateA = DateTime.parse(a['dateDemande']);
+        final dateB = DateTime.parse(b['dateDemande']);
+        return dateB.compareTo(dateA);
       });
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        List<Map<String, dynamic>> loadedReservations = [];
-
-        if (data['documents'] != null) {
-          for (var doc in data['documents']) {
-            final fields = doc['fields'] as Map<String, dynamic>;
-
-            final dateDemande = fields['dateDemande']?['timestampValue'] != null
-                ? DateTime.parse(fields['dateDemande']['timestampValue'])
-                : null;
-
-            final passagerId = fields['passager_id']?['stringValue'] ?? '';
-            final conducteurId = fields['conducteurId']?['stringValue'] ?? '';
-            final trajetId = fields['trajetId']?['stringValue'] ?? '';
-
-            final trajetDetails = await fetchTrajetDetails(trajetId, idToken);
-
-            loadedReservations.add({
-              'depart': trajetDetails['depart'],
-              'arrivee': trajetDetails['arrivee'],
-              'prix': trajetDetails['prix'],
-              'statut': fields['statut']?['stringValue'] ?? '',
-              'dateDemande': dateDemande?.toString() ?? '',
-              'passager_id': passagerId,
-              'conducteurId': conducteurId,
-            });
-          }
-        }
-
-        final userId = FirebaseAuth.instance.currentUser!.uid;
-        final userReservations = loadedReservations
-            .where((res) => res['passager_id'] == userId)
-            .toList();
-
-        userReservations.sort((a, b) {
-          final dateA = DateTime.parse(a['dateDemande']);
-          final dateB = DateTime.parse(b['dateDemande']);
-          return dateB.compareTo(dateA);
+      if (mounted) {
+        setState(() {
+          reservations = userReservations;
+          isLoading = false;
         });
-
-        if (mounted) {
-          setState(() {
-            reservations = userReservations;
-            isLoading = false;
-          });
-        }
-      } else {
-        throw Exception('Erreur ${response.statusCode}: ${response.body}');
       }
     } catch (e) {
       print('Erreur: $e');
@@ -147,7 +136,7 @@ class _MesReservationsPageState extends State<MesReservationsPage> {
       MaterialPageRoute(
         builder: (context) => ChatPage(
           chatId: chatId,
-          otherUserName: 'Conducteur', // ou récupérer le vrai nom si tu veux
+          otherUserName: 'Conducteur', 
         ),
       ),
     );
